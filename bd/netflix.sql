@@ -44,3 +44,27 @@ VALUES ('Tom', 'Hanks', 'Estados Unidos', '1956-07-09'),
 	
     #esta es una prueba
     
+SELECT * FROM movie;
+SELECT title, genre FROM movie WHERE year > '1990';
+SELECT * FROM movie WHERE category = 'Top 10';
+UPDATE movie set year = 1997 WHERE title = ' La vita è bella';
+
+SELECT * FROM actors;
+SELECT * FROM actors WHERE birthday > '1950-01-01' and birthday < '1960-01-01';
+SELECT name, lastname FROM actors WHERE country = 'Estados unidos';
+
+SELECT * FROM user;
+DELETE FROM user WHERE name LIKE 'M%';
+
+ALTER TABLE actors ADD img text;
+SELECT * FROM actors;
+
+
+#eliminar tabla
+# DROP [TEMPORARY] TABLE [IF EXISTS]
+# tbl_name [, tbl_name] ...
+# [RESTRICT | CASCADE]
+
+#delete DB
+# DROP {DATABASE | SCHEMA} [IF EXISTS] db_name
+    
