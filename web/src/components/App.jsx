@@ -39,6 +39,7 @@ const App = () => {
       sort: allMoviesOptionSort
     };
     apiMovies.getMoviesFromApi(params).then(response => {
+      console.log(response.movies);
       setAppMovies(response.movies);
     });
   }, [allMoviesOptionGenre, allMoviesOptionSort]);
