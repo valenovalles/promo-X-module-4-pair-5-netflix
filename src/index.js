@@ -12,7 +12,7 @@ async function connectDB () {
   const conex = await mysql.createConnection({
       host: "localhost",
       user: "root",
-      password: "etsitoet87.",
+      password: "Ellie.bellie1993",
       database: "netflix"
   });
   await conex.connect();
@@ -34,4 +34,10 @@ server.get('/movies', async (req, res)=>{
     //respondo con los datos
     res.json({success : true, movies: results});
 
-})
+});
+
+const staticServerPathWeb = 'src/public-react'; // En esta carpeta ponemos los ficheros estáticos
+server.use(express.static(staticServerPathWeb));
+
+const staticServerPathImage = 'src/public-movies-images'; // En esta carpeta ponemos los ficheros estáticos
+server.use(express.static(staticServerPathImage));
