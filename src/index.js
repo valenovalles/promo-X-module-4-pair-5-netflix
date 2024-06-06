@@ -26,11 +26,14 @@ server.listen(serverPort, () => {
 });
 server.get('/movies', async (req, res)=>{
   const conn = await connectDB();
+    //query params
+    const genreFilterParam = req.query.genre;
+    console.log(genreFilterParam)
     //sql -> SELECT
-    const selectMovies= "SELECT * FROM movie;";
+    const selectMovies= "SELECT * FROM movie WHERE genre = ?;";
     //ejecutar el sql en la BD
-    const [results] = await conn.query(selectMovies);
-    console.log(results)
+    const [results] = await conn.query(selectMovies, [genreFilterParam]);
+    
     //respondo con los datos
     res.json({success : true, movies: results});
 
