@@ -30,12 +30,18 @@ server.get('/movies', async (req, res)=>{
     const genreFilterParam = req.query.genre;
     console.log(genreFilterParam)
     //sql -> SELECT
-    const selectMovies= "SELECT * FROM movie WHERE genre = ?;";
-    //ejecutar el sql en la BD
-    const [results] = await conn.query(selectMovies, [genreFilterParam]);
-    
+    let data;
+    if (genreFilterParam === ""){
+      const selectMovies= "SELECT * FROM movie;";
+      const [results] = await conn.query(selectMovies);
+      data = results;
+    } else{
+      const selectMovies= "SELECT * FROM movie WHERE genre = ?;";
+      const [results] = await conn.query(selectMovies, [genreFilterParam]);
+      data = results;
+    };  
     //respondo con los datos
-    res.json({success : true, movies: results});
+    res.json({success : true, movies: data});
 
 });
 
