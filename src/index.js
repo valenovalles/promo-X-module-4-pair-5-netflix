@@ -11,8 +11,8 @@ async function connectDB () {
   //los datos corresponden a la bd de tu ordenador
   const conex = await mysql.createConnection({
       host: "localhost",
-      user: "root",
-      password: "Ellie.bellie1993",
+      user: process.env.DB_USER,
+      password: process.env.DB_PASS,
       database: "netflix"
   });
   await conex.connect();
