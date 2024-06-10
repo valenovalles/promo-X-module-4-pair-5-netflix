@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 // components
 import Header from './Header';
@@ -98,19 +98,20 @@ const App = () => {
   Con este evento enviamos los datos del sign up al servidor cuando la usuaria lanza el evento.
   Como queremos que el back devuelva el id de la usuaria sendSingUpToApi recibe el email y la contraseña que ella haya escrito.
   */
-  const sendSingUpToApi = data => {
+  const sendSingUpToApi = (data) => {
     // Limpiamos el error antes de enviar los datos al API
     setSignUpErrorMessage('');
     // Enviamos los datos al API
-    apiUser.sendSingUpToApi(data).then(response => {
-      if (response.success === true) {
-        setUserId(response.userId);
-        // Si la usuaria introduce bien sus datos redireccionamos desde la página de signup al inicio de la página
-        router.redirect('/');
-      } else {
-        // Si la usuaria introduce mal sus datos guardamos el error que nos devuelve el API para que se pinte en la página
-        setSignUpErrorMessage(response.errorMessage);
-      }
+    apiUser.sendSingUpToApi(data)
+      .then(response => {
+        if (response.success === true) {
+          setUserId(response.userId);
+          // Si la usuaria introduce bien sus datos redireccionamos desde la página de signup al inicio de la página
+          router.redirect('/');
+        } else {
+          // Si la usuaria introduce mal sus datos guardamos el error que nos devuelve el API para que se pinte en la página
+          setSignUpErrorMessage(response.errorMessage);
+        }
     });
   };
 

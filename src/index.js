@@ -1,7 +1,8 @@
 const express = require('express');
 const cors = require('cors');
-const mysql = require("mysql2/promise")
-server.set('view engine', 'ejs');
+const mysql = require("mysql2/promise");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 // create and config server
 const server = express();
@@ -13,8 +14,8 @@ async function connectDB () {
   //los datos corresponden a la bd de tu ordenador
   const conex = await mysql.createConnection({
       host: "localhost",
-      user: process.env.DB_USER,
-      password: process.env.DB_PASS,
+      user: "root",
+      password: "Ellie.bellie1993",
       database: "netflix"
   });
   await conex.connect();
@@ -57,6 +58,26 @@ server.get('/movie/:idMovies', async (req, res) => {
   res.render ("detailMovie", {movie: result[0]});
   conn.end()
 
+})
+
+server.post('/signup', async (req, res)=>{
+  //conectar DB
+  const conex = await connectDB();
+  //recoger datos usuario
+  const {email, password} = req.body;
+  //comprobar que no exista ya en DB
+  const selectEmail = "SELECT * FROM user WHERE email = ?;";
+  const [emailResult] = await conex.query(selectEmail, [email]);
+  //si no existe: insert into
+  if(emailResult.length === 0){
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const insertUser = "INSERT INTO user (email, password) VALUES (?, ?);";
+    const [newUser] = await conex.query(insertUser, [email, hashedPassword]);
+    res.status(201).json({success: true, userId: newUser.insertId})
+  } else{ //si existe: responder con msg ya estas registrada
+    res.status(201).json({success: false, message: "Este usuario ya existe"});
+  };
+  await conex.end();
 })
 
 const staticServerPathWeb = 'src/public-react'; // En esta carpeta ponemos los ficheros estáticos
