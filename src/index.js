@@ -9,13 +9,14 @@ const server = express();
 server.use(cors());
 server.use(express.json());
 server.set('view engine', 'ejs');
+require('dotenv').config();
 
 async function connectDB () {
   //los datos corresponden a la bd de tu ordenador
   const conex = await mysql.createConnection({
       host: "localhost",
-      user: "root",
-      password: "Ellie.bellie1993",
+      user: process.env.DB_USER,
+      password: process.env.DB_PASS,
       database: "netflix"
   });
   await conex.connect();
@@ -70,14 +71,41 @@ server.post('/signup', async (req, res)=>{
   const [emailResult] = await conex.query(selectEmail, [email]);
   //si no existe: insert into
   if(emailResult.length === 0){
-    const hashedPassword = await bcrypt.hash(password, 10);
     const insertUser = "INSERT INTO user (email, password) VALUES (?, ?);";
-    const [newUser] = await conex.query(insertUser, [email, hashedPassword]);
+    const [newUser] = await conex.query(insertUser, [email, password]);
     res.status(201).json({success: true, userId: newUser.insertId})
   } else{ //si existe: responder con msg ya estas registrada
     res.status(201).json({success: false, message: "Este usuario ya existe"});
   };
   await conex.end();
+})
+
+server.post("/login", async (req, res)=>{
+  //conectar bd
+  const conex = await connectDB();
+  //recoger datos del usuario
+  const {email, password} = req.body;
+  //hacer comprobación de que el usuario y contraseña son correctos.
+  //1. comprobar que el email existe en la bd
+  const selectUser = "SELECT * FROM user WHERE email = ? AND password = ?;";
+  const [resultUser]= await conex.query(selectUser, [email, password])
+  //si el email existe, comprobar que la contraseña encriptada coincide con la del usuario. Con la dependencia bcrypt
+  
+  if(resultUser.length !==0 ){
+    res.status(201).json({success: true, "userId": "id_de_la_usuaria_encontrada"});
+  } else {res.status(201).json({success: false,
+  message: "Usuaria/o no encontrada/o"
+  })
+    }
+});
+
+server.get("/user/profile", async (req, res)=>{
+  const conex = await connectDB();
+  const {userId} = req.headers(userId);
+
+  const selectUser = "SELECT * FROM user WHERE idUser= ?;";
+  const [resultUser]= await conex.query(selectUser, [userId])
+  res.status(201).json({success: true, data: resultUser});
 })
 
 const staticServerPathWeb = 'src/public-react'; // En esta carpeta ponemos los ficheros estáticos
