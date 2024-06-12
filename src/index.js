@@ -15,8 +15,8 @@ async function connectDB () {
   //los datos corresponden a la bd de tu ordenador
   const conex = await mysql.createConnection({
       host: "localhost",
-      user: process.env.DB_USER,
-      password: process.env.DB_PASS,
+      user: "root",
+      password: "Ellie.bellie1993",
       database: "netflix"
   });
   await conex.connect();
@@ -101,11 +101,21 @@ server.post("/login", async (req, res)=>{
 
 server.get("/user/profile", async (req, res)=>{
   const conex = await connectDB();
-  const {userId} = req.headers(userId);
+  const {userId} = req.headers;
 
   const selectUser = "SELECT * FROM user WHERE idUser= ?;";
   const [resultUser]= await conex.query(selectUser, [userId])
-  res.status(201).json({success: true, data: resultUser});
+  res.status(200).json({success: true, data: resultUser});
+})
+
+server.post("/profile", async (req, res)=>{
+  const conex = await connectDB();
+  const {data} = req.body;
+  const {userId} = req.headers;
+  const updateUser = "UPDATE user SET email = ?, password = ?, name = ? WHERE userId = ?;";
+  const [resultUser]= await conex.query(updateUser, [email, password, name, userId]);
+  console.log(updateUser);
+  res.status(200).json({success: true, data: resultUser});
 })
 
 const staticServerPathWeb = 'src/public-react'; // En esta carpeta ponemos los ficheros estáticos

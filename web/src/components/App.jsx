@@ -11,6 +11,7 @@ import SignUp from './SignUp';
 import apiMovies from '../services/api-movies';
 import apiUser from '../services/api-user';
 import router from '../services/router';
+import localStorage from '../services/local-storage';
 
 const App = () => {
   // state: user
@@ -141,6 +142,7 @@ const App = () => {
     router.redirect('/');
     router.reload();
     localStorage.clear();
+    setUserId("");
 
   };
 
@@ -156,6 +158,18 @@ const App = () => {
       setAllMoviesOptionSort(data.value);
     }
   };
+
+  useEffect(() => {
+    // Simulate fetching userId from an API or some source
+    const fetchUserId = async () => {
+      const fetchedUserId = 'someFetchedUserId'; // Replace with actual fetch logic
+      setUserId(fetchedUserId);
+    };
+
+    fetchUserId();
+  }, []);
+
+
 
   // render
 
